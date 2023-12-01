@@ -25,6 +25,7 @@ def transform(line):
             for k, v in vals.items():
                 if ss[i:i+len(k)] == k:
                     digits.append(v)
+                    continue
     return digits
 
 calibration_total1 = 0
