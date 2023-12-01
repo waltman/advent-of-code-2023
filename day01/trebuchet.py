@@ -1,5 +1,4 @@
 from sys import argv
-import re
 
 def calibrate(line):
     digits = [c for c in line if c.isdigit()]
