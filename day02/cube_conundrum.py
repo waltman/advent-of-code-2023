@@ -31,8 +31,8 @@ def min_set_prod(game):
         'blue': 0,
     }
 
-    toks = game.split('; ')
-    for cubes in toks:
+    game_toks = game.split('; ')
+    for cubes in game_toks:
         toks = cubes.split(', ')
         for tok in toks:
             count, color = tok.split(' ')
