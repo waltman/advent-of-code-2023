@@ -25,11 +25,7 @@ def good_game(game):
     return True
 
 def min_set_prod(game):
-    min_set = {
-        'red': 0,
-        'green': 0,
-        'blue': 0,
-    }
+    min_set = {k:0 for k in ('red', 'green', 'blue')}
 
     game_toks = game.split('; ')
     for cubes in game_toks:
