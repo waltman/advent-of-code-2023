@@ -6,7 +6,7 @@ card_cnt = dict()
 with open(argv[1]) as f:
     for line in f:
         card, data = line.rstrip().split(': ')
-        card_num = [int(d) for d in re.findall(r'\d+', card)][0]
+        card_num = int(re.search(r'(\d+)', card).group(1))
         card_cnt.setdefault(card_num, 1)
         them, us = data.split(' | ')
         them_set = {int(d) for d in re.findall(r'\d+', them)}
