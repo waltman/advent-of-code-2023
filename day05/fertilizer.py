@@ -50,3 +50,16 @@ with open(argv[1]) as f:
             almanacs[k].add_map(dest_start, src_start, range_len)
 
 print('Part 1:', min([location(seed, almanacs) for seed in seeds]))    
+
+part2 = 1e300
+for i in range(0, len(seeds), 2):
+    print(f'Testing {seeds[i]} to {seeds[i] + seeds[i+1]-1}')
+    for seed in range(seeds[i], seeds[i] + seeds[i+1]):
+        if (val := location(seed, almanacs)) < part2:
+            print('new best!', val)
+            part2 = val
+
+print('Part 2:', part2)
+
+
+
