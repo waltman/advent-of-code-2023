@@ -1,5 +1,6 @@
 import sys
 from collections import Counter
+from itertools import product
 
 def hand_val(hand):
     in_hand = Counter()
@@ -26,6 +27,13 @@ def hand_val(hand):
     else:
         return 1 # high card
 
+def jokerhand_vals(hand, jokers):
+    my_hand = hand.copy()
+    for it in product(range(2, 15), repeat=len(jokers)):
+        for i in range(len(jokers)):
+            my_hand[jokers[i]] = it[i]
+        yield hand_val(my_hand)
+
 def main():
     card_value = {
         '2': 2,
@@ -46,6 +54,7 @@ def main():
     card_value2['J'] = 1
 
     cards = []
+    cards2 = []
     with open(sys.argv[1]) as f:
         for line in f:
             toks = line.rstrip().split(' ')
@@ -54,9 +63,21 @@ def main():
             val = hand_val(toks[0])
             bid = int(toks[1])
             cards.append((val, hand, bid))
+            cards2.append((val, hand2, bid))
 
     ranking = sorted(cards)
     part1 = sum([ranking[i][2] * (i+1) for i in range(len(ranking))])
     print('Part 1:', part1)
+
+    joker_cards = []
+    for val, hand, bid in cards2:
+        jokers = [i for i in range(len(hand)) if hand[i] == 1]
+        if jokers:
+            val = max(jokerhand_vals(hand, jokers))
+        joker_cards.append((val, hand, bid))
+
+    ranking2 = sorted(joker_cards)
+    part2 = sum([ranking2[i][2] * (i+1) for i in range(len(ranking2))])
+    print('Part 2:', part2)
 
 main()
