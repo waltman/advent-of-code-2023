@@ -42,12 +42,15 @@ def main():
         'K': 13,
         'A': 14,
     }
+    card_value2 = card_value.copy()
+    card_value2['J'] = 1
 
     cards = []
     with open(sys.argv[1]) as f:
         for line in f:
             toks = line.rstrip().split(' ')
             hand = [card_value[c] for c in toks[0]]
+            hand2 = [card_value2[c] for c in toks[0]]
             val = hand_val(toks[0])
             bid = int(toks[1])
             cards.append((val, hand, bid))
