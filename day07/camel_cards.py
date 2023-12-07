@@ -3,12 +3,7 @@ from collections import Counter
 from itertools import product
 
 def hand_val(hand):
-    in_hand = Counter()
-    for c in hand:
-        in_hand[c] += 1
-    count_cnt = Counter()
-    for cnt in in_hand.values():
-        count_cnt[cnt] += 1
+    count_cnt = Counter(Counter(hand).values())
 
     if 5 in count_cnt:
         return 7 # 5 of a kind
