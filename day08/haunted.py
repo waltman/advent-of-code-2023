@@ -1,8 +1,16 @@
 import sys
 import re
+from math import lcm
 
-def done(keys):
-    return all([k[-1] == 'Z' for k in keys])
+def part2_steps(k, mapping, lr):
+    idx = 0
+    steps = 0
+    while k[-1] != 'Z':
+        i = 0 if lr[idx] == 'L' else 1
+        k = mapping[k][i]
+        steps += 1
+        idx = (idx + 1) % len(lr)
+    return steps
 
 def main():
     mapping = dict()
@@ -28,15 +36,8 @@ def main():
     print('Part 1:', part1)
 
     k2 = [k for k in mapping.keys() if k[-1] == 'A']
-    part2 = 0
-    idx = 0
-    while not done(k2):
-        i = 0 if lr[idx] == 'L' else 1
-        k2 = [mapping[k][i] for k in k2]
-        part2 += 1
-        idx = (idx + 1) % len(lr)
-#        print(idx, part2, k2)
-
-    print('Part 2:', part2)
-
+    
+    steps = [part2_steps(k, mapping, lr) for k in k2]
+    print('Part 2:', lcm(*steps))
+    
 main()
