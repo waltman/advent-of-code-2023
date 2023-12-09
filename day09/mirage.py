@@ -26,9 +26,6 @@ def main():
     with open(sys.argv[1]) as f:
         reports = [list(map(int, line.split())) for line in f]
 
-    for report in reports:
-        next_val(report)
-
     print('Part 1:', sum(map(next_val, reports)))
     print('Part 2:', sum(map(prev_val, reports)))
 
