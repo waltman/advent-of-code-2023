@@ -15,7 +15,6 @@ sub extrapolate($report) {
 
 sub next_val($report) {
     my $seqs = extrapolate($report);
-
     my $delta = 0;
     for (my $i = $#$seqs - 1; $i >= 0; $i--) {
 	$delta = $seqs->[$i][-1] + $delta;
@@ -26,7 +25,6 @@ sub next_val($report) {
 
 sub prev_val($report) {
     my $seqs = extrapolate($report);
-
     my $delta = 0;
     for (my $i = $#$seqs - 1; $i >= 0; $i--) {
 	$delta = $seqs->[$i][0] - $delta;
