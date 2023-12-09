@@ -1,10 +1,14 @@
 import sys
 
-def next_val(report):
+def extrapolate(report):
     seqs = [report]
     while any(seqs[-1]):
         seqs.append([seqs[-1][i+1] - seqs[-1][i] for i in range(len(seqs[-1])-1)])
 
+    return seqs
+
+def next_val(report):
+    seqs = extrapolate(report)
     delta = 0
     for i in range(len(seqs)-2, -1, -1):
         delta = seqs[i][-1] + delta
@@ -12,10 +16,7 @@ def next_val(report):
     return delta
 
 def prev_val(report):
-    seqs = [report]
-    while any(seqs[-1]):
-        seqs.append([seqs[-1][i+1] - seqs[-1][i] for i in range(len(seqs[-1])-1)])
-
+    seqs = extrapolate(report)
     delta = 0
     for i in range(len(seqs)-2, -1, -1):
         delta = seqs[i][0] - delta
