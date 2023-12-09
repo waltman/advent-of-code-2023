@@ -52,11 +52,11 @@ with open(argv[1]) as f:
 print('Part 1:', min([location(seed, almanacs) for seed in seeds]))    
 
 part2 = 1e300
-for i in range(0, len(seeds), 2):
+for i in range(8, len(seeds), 2):
     print(f'Testing {seeds[i]} to {seeds[i] + seeds[i+1]-1}')
     for seed in range(seeds[i], seeds[i] + seeds[i+1]):
         if (val := location(seed, almanacs)) < part2:
-            print('new best!', val)
+            print(f'new best! {seed} -> {val}')
             part2 = val
 
 print('Part 2:', part2)

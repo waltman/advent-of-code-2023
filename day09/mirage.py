@@ -24,12 +24,12 @@ def prev_val(report):
 
 def main():
     with open(sys.argv[1]) as f:
-        reports = [[int(d) for d in line.split()] for line in f]
+        reports = [list(map(int, line.split())) for line in f]
 
     for report in reports:
         next_val(report)
 
-    print('Part 1:', sum([next_val(report) for report in reports]))
-    print('Part 2:', sum([prev_val(report) for report in reports]))
+    print('Part 1:', sum(map(next_val, reports)))
+    print('Part 2:', sum(map(prev_val, reports)))
 
 main()
