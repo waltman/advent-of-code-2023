@@ -2,12 +2,8 @@
 use v5.38;
 use List::Util qw(any sum);
 
-my @reports;
-while (<>) {
-    chomp;
-    push @reports, [split];
+my @reports = map {[split]} <>;
 
-}
 printf "Part 1: %d\n", sum(map {next_val($_)} @reports);
 printf "Part 2: %d\n", sum(map {prev_val($_)} @reports);
 
