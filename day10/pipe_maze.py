@@ -118,6 +118,19 @@ def flood_fill(grid, walls, seeds):
 
     return interior
 
+# broken attempt at solving part 2 with an even/odd algorithm
+def even_odd(grid, walls):
+    for row in range(grid.shape[0]):
+        cnt = 0
+        for col in range(grid.shape[1]):
+            if (row, col) in walls:
+                if col > 0 and (row, col-1) not in walls:
+#                    print(f'crossing wall at ({row},{col})')
+                    cnt += 1
+            elif grid[row][col] == '.' and cnt % 2 == 1:
+#                print((row, col))
+                yield 1
+
 def main():
     with open(sys.argv[1]) as f:
         grid = np.array([[c for c in line.rstrip()] for line in f])
@@ -167,6 +180,7 @@ def main():
         interior = flood_fill(grid, seen, out_adjs)
 
     print('Part 2:', len(interior))
+    print('Part 2 (even/odd) (broken):', sum(even_odd(grid, seen)))
 
 main()
 
