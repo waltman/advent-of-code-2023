@@ -46,20 +46,36 @@ def tile_type(grid, row, col):
     return tile[''.join(neighbors)]
 
 # assume clockwise path
-def find_adj(row, col, new_row, new_col):
+def find_adj(ch, row, col, new_row, new_col):
     drow, dcol = new_row - row, new_col - col
     if (drow, dcol) == (1, 0): # down
-        inside = row, col-1
-        outside = row, col+1
+        inside = [(row, col-1)]
+        outside = [(row, col+1)]
+        if ch == 'J':
+            outside.append((row+1, col))
+        elif ch == 'L':
+            inside.append((row+1, col))
     elif (drow, dcol) == (-1, 0): # up
-        inside = row, col+1
-        outside = row, col-1
+        inside = [(row, col+1)]
+        outside = [(row, col-1)]
+        if ch == 'F':
+            outside.append((row-1, col))
+        elif ch == '7':
+            inside.append((row-1, col))
     elif (drow, dcol) == (0, 1): # right
-        inside = row+1, col
-        outside = row-1, col
+        inside = [(row+1, col)]
+        outside = [(row-1, col)]
+        if ch == '7':
+            outside.append((row, col+1))
+        elif ch == 'J':
+            inside.append((row, col+1))
     else: # left
-        inside = row-1, col
-        outside = row+1, col
+        inside = [(row-1, col)]
+        outside = [(row+1, col)]
+        if ch == 'L':
+            outside.append((row, col-1))
+        elif ch == 'F':
+            inside.append((row, col-1))
     return inside, outside
 
 def flood_fill(grid, walls, seeds):
@@ -121,9 +137,9 @@ def main():
                 seen.add(adj)
                 ok = True
 
-                in_adj, out_adj = find_adj(row, col, new_row, new_col)
-                in_adjs.add(in_adj)
-                out_adjs.add(out_adj)
+                in_adj, out_adj = find_adj(grid[row][col], row, col, new_row, new_col)
+                in_adjs |= set(in_adj)
+                out_adjs |= set(out_adj)
                 row, col = new_row, new_col
 #                print(row, col)
                 
