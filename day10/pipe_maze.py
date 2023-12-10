@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+from collections import deque
 
 def start_pos(grid):
     for row in range(grid.shape[0]):
@@ -9,12 +10,12 @@ def start_pos(grid):
 
 def adjacent(grid, row, col):
     deltas = {
-        '|': [(-1,0), (+1,0)],
-        '-': [(0,-1), (0,+1)],
-        'F': [(0,+1), (+1,0)],
-        'L': [(-1,0), (0,+1)],
-        'J': [(-1,0), (0,-1)],
-        '7': [(0,-1), (+1,0)],
+        '|': [(-1,0), (+1,0)], # down, up
+        '-': [(0,-1), (0,+1)], # left, right
+        'F': [(0,+1), (+1,0)], # right, down
+        'L': [(-1,0), (0,+1)], # up, right
+        'J': [(-1,0), (0,-1)], # up, left
+        '7': [(0,-1), (+1,0)], # left, down
     }
 
     d1, d2 = deltas[grid[row][col]]
@@ -44,6 +45,59 @@ def tile_type(grid, row, col):
 
     return tile[''.join(neighbors)]
 
+# assume clockwise path
+def find_adj(row, col, new_row, new_col):
+    drow, dcol = new_row - row, new_col - col
+    if (drow, dcol) == (1, 0): # down
+        inside = row, col-1
+        outside = row, col+1
+    elif (drow, dcol) == (-1, 0): # up
+        inside = row, col+1
+        outside = row, col-1
+    elif (drow, dcol) == (0, 1): # right
+        inside = row+1, col
+        outside = row-1, col
+    else: # left
+        inside = row-1, col
+        outside = row+1, col
+    return inside, outside
+
+def flood_fill(grid, walls, seeds):
+    interior = seeds.copy()
+    queue = deque(interior)
+    while queue:
+        row, col = queue.popleft()
+        for r in range(row-1, -1, -1):
+            if (r, col) in walls:
+                break
+            else:
+                if ((r,col)) not in interior:
+                    interior.add((r,col))
+                    queue.append((r,col))
+        for r in range(row+1, grid.shape[0]):
+            if (r, col) in walls:
+                break
+            else:
+                if ((r,col)) not in interior:
+                    interior.add((r, col))
+                    queue.append((r,col))
+        for c in range(col-1, -1, -1):
+            if (row, c) in walls:
+                break
+            else:
+                if ((row,c)) not in interior:
+                    interior.add((row, c))
+                    queue.append((row,c))
+        for c in range(col+1, grid.shape[1]):
+            if (row, c) in walls:
+                break
+            else:
+                if ((row,c)) not in interior:
+                    interior.add((row, c))
+                    queue.append((row,c))
+
+    return interior
+
 def main():
     with open(sys.argv[1]) as f:
         grid = np.array([[c for c in line.rstrip()] for line in f])
@@ -54,6 +108,8 @@ def main():
     seen = {(start_row, start_col)}
     row, col = start_row, start_col
     done = False
+    in_adjs = set()
+    out_adjs = set()
     while not done:
         adjs = adjacent(grid, row, col)
         ok = False
@@ -61,9 +117,16 @@ def main():
             if adj in seen:
                 continue
             else:
-                row, col = adj
+                new_row, new_col = adj
                 seen.add(adj)
                 ok = True
+
+                in_adj, out_adj = find_adj(row, col, new_row, new_col)
+                in_adjs.add(in_adj)
+                out_adjs.add(out_adj)
+                row, col = new_row, new_col
+#                print(row, col)
+                
                 break
         if not ok:
             # hopefully we're back at the start
@@ -77,6 +140,30 @@ def main():
                 done = True
 
     print('Part 1:', len(seen) // 2)
+    in_adjs -= seen
+    out_adjs -= seen
+    if len(in_adjs) < len(out_adjs): # guessed right!
+        interior = flood_fill(grid, seen, in_adjs)
+    else:
+        interior = flood_fill(grid, seen, out_adjs)
+
+    print(interior)
+    print('Part 2:', len(interior))
+    # print('inside', in_adjs)
+    # print('outside', out_adjs)
+
+    for row in range(grid.shape[0]):
+        arr = []
+        for col in range(grid.shape[1]):
+            if (row, col) in seen:
+                c = grid[row][col]
+#                c = ' '
+            elif (row, col) in interior:
+                c = '.'
+            else:
+                c = ' '
+            arr.append(c)
+        print(''.join(arr))
 
 main()
 
