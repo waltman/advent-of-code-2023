@@ -51,31 +51,39 @@ def find_adj(ch, row, col, new_row, new_col):
     if (drow, dcol) == (1, 0): # down
         inside = [(row, col-1)]
         outside = [(row, col+1)]
-        if ch == 'J':
-            outside.append((row+1, col))
-        elif ch == 'L':
-            inside.append((row+1, col))
+        if ch == '7':
+            outside.append((row, col+1))
+        elif ch == 'F':
+            inside.append((row, col+1))
+        elif ch != '|':
+            print(f'unexpected {ch} while down')
     elif (drow, dcol) == (-1, 0): # up
         inside = [(row, col+1)]
         outside = [(row, col-1)]
-        if ch == 'F':
-            outside.append((row-1, col))
-        elif ch == '7':
-            inside.append((row-1, col))
+        if ch == 'L':
+            outside.append((row+1, col))
+        elif ch == 'J':
+            inside.append((row+1, col))
+        elif ch != '|':
+            print(f'unexpected {ch} while up')
     elif (drow, dcol) == (0, 1): # right
         inside = [(row+1, col)]
         outside = [(row-1, col)]
-        if ch == '7':
-            outside.append((row, col+1))
-        elif ch == 'J':
-            inside.append((row, col+1))
+        if ch == 'F':
+            outside.append((row-1, col))
+        elif ch == 'L':
+            inside.append((row-1, col))
+        elif ch != '-':
+            print(f'unexpected {ch} while right')
     else: # left
         inside = [(row-1, col)]
         outside = [(row+1, col)]
-        if ch == 'L':
-            outside.append((row, col-1))
-        elif ch == 'F':
-            inside.append((row, col-1))
+        if ch == 'J':
+            outside.append((row+1, col))
+        elif ch == '7':
+            inside.append((row+1, col))
+        elif ch != '-':
+            print(f'unexpected {ch} while left')
     return inside, outside
 
 def flood_fill(grid, walls, seeds):
@@ -141,7 +149,6 @@ def main():
                 in_adjs |= set(in_adj)
                 out_adjs |= set(out_adj)
                 row, col = new_row, new_col
-#                print(row, col)
                 
                 break
         if not ok:
@@ -163,23 +170,7 @@ def main():
     else:
         interior = flood_fill(grid, seen, out_adjs)
 
-    print(interior)
     print('Part 2:', len(interior))
-    # print('inside', in_adjs)
-    # print('outside', out_adjs)
-
-    for row in range(grid.shape[0]):
-        arr = []
-        for col in range(grid.shape[1]):
-            if (row, col) in seen:
-                c = grid[row][col]
-#                c = ' '
-            elif (row, col) in interior:
-                c = '.'
-            else:
-                c = ' '
-            arr.append(c)
-        print(''.join(arr))
 
 main()
 
