@@ -94,31 +94,27 @@ def flood_fill(grid, walls, seeds):
         for r in range(row-1, -1, -1):
             if (r, col) in walls:
                 break
-            else:
-                if ((r,col)) not in interior:
-                    interior.add((r,col))
-                    queue.append((r,col))
+            elif ((r,col)) not in interior:
+                interior.add((r,col))
+                queue.append((r,col))
         for r in range(row+1, grid.shape[0]):
             if (r, col) in walls:
                 break
-            else:
-                if ((r,col)) not in interior:
-                    interior.add((r, col))
-                    queue.append((r,col))
+            elif ((r,col)) not in interior:
+                interior.add((r, col))
+                queue.append((r,col))
         for c in range(col-1, -1, -1):
             if (row, c) in walls:
                 break
-            else:
-                if ((row,c)) not in interior:
-                    interior.add((row, c))
-                    queue.append((row,c))
+            elif ((row,c)) not in interior:
+                interior.add((row, c))
+                queue.append((row,c))
         for c in range(col+1, grid.shape[1]):
             if (row, c) in walls:
                 break
-            else:
-                if ((row,c)) not in interior:
-                    interior.add((row, c))
-                    queue.append((row,c))
+            elif ((row,c)) not in interior:
+                interior.add((row, c))
+                queue.append((row,c))
 
     return interior
 
