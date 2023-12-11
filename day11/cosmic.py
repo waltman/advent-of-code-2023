@@ -3,7 +3,7 @@ import numpy as np
 from itertools import product, combinations
 
 def expand_galaxies(grid, val):
-    galaxies = [[row,col] for (row,col) in product(range(grid.shape[0]), range(grid.shape[1])) if grid[row][col] == '#']
+    galaxies = np.argwhere(grid == '#')
     for row in range(grid.shape[0]-1, -1, -1):
         if np.all(grid[row,:] == '.'):
             for galaxy in galaxies:
