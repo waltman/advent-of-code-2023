@@ -2,24 +2,6 @@ import sys
 import numpy as np
 from itertools import product, combinations
 
-def expand_grid(grid):
-    new_grid = grid.copy()
-    row = 0
-    while row < new_grid.shape[0]:
-        if np.all(new_grid[row,:] == '.'):
-            new_grid = np.insert(new_grid, row, '.', axis=0)
-            row += 1
-        row += 1
-
-    col = 0
-    while col < new_grid.shape[1]:
-        if np.all(new_grid[:,col] == '.'):
-            new_grid = np.insert(new_grid, col, '.', axis=1)
-            col += 1
-        col += 1
-
-    return new_grid
-
 def expand_galaxies(grid, val):
     galaxies = [[row,col] for (row,col) in product(range(grid.shape[0]), range(grid.shape[1])) if grid[row][col] == '#']
     for row in range(grid.shape[0]-1, -1, -1):
