@@ -11,7 +11,7 @@ def qm_pos(s):
 
 def matches(condition, size_re):
     idxs = qm_pos(condition)
-    print('in matches, len =', len(idxs))
+#    print('in matches, len =', len(idxs))
     arrange = [c for c in condition]
     cnt = 0
     for prod in product('.#', repeat=len(idxs)):
@@ -21,6 +21,15 @@ def matches(condition, size_re):
             cnt += 1
 
     return cnt
+
+def fact(n):
+    prod = 1
+    for x in range(2, n+1):
+        prod *= x
+    return prod
+
+def choose(n, k):
+    return fact(n) / (fact(k) * fact(n-k))
 
 def main():
     part1 = 0
@@ -33,8 +42,13 @@ def main():
             sizes2 = ','.join([str(d) for d in [int(d) for d in sizes.split(',')] * 5])
             sizes2_re = size_regexp(sizes2)
             condition2 = '?'.join([condition]*5)
+            qs = sum([1 for c in condition2 if c == '?'])
+            ps = sum([1 for c in condition2 if c == '#'])
+            tot = sum([int(d) for d in sizes2.split(',')])
+            left = tot - ps
             print(condition2, sizes, sizes2, sizes2_re)
-            part2 += matches(condition2, sizes2_re)
+            print(qs, ps, tot, left, choose(qs, left))
+#            part2 += matches(condition2, sizes2_re)
 
     print('Part 1:', part1)
     print('Part 2:', part2)
