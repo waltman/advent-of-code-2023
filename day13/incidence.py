@@ -52,4 +52,24 @@ def main():
 
     print('Part 1:', sum(map(score, patterns)))
 
+    part2 = 0
+    p = 0
+    for pattern in patterns:
+        p += 1
+        done = False
+        orig_score = score(pattern)
+        for row in range(pattern.shape[0]):
+            if done:
+                break
+            for col in range(pattern.shape[1]):
+                pattern[row][col] = '.' if pattern[row][col] == '#' else '#'
+                new_score = score(pattern)
+                pattern[row][col] = '.' if pattern[row][col] == '#' else '#'
+                if new_score > 0 and new_score != orig_score:
+                    part2 += new_score
+                    print(f'pattern {p} row {row} col {col} new score {new_score}')
+                    done = True
+                    break
+    print('Part 2:', part2)
+
 main()
