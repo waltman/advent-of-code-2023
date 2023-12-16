@@ -1,11 +1,13 @@
 import sys
 import numpy as np
 
-def score(pattern):
+def score(pattern, orig_score = -1):
     nrows, ncols = pattern.shape
     
     # test rows
     for r in range(nrows - 1):
+        if (r+1) * 100 == orig_score:
+            continue
         if np.all(pattern[r,:] == pattern[r+1,:]):
             ok = True
             for i in range(1, r+1):
@@ -20,6 +22,8 @@ def score(pattern):
 
     # test columns
     for c in range(ncols - 1):
+        if (c+1) == orig_score:
+            continue
         if np.all(pattern[:,c] == pattern[:,c+1]):
             ok = True
             for i in range(1, c+1):
@@ -56,16 +60,22 @@ def main():
     p = 0
     for pattern in patterns:
         p += 1
+        if p == 7:
+            pass
         done = False
         orig_score = score(pattern)
+        print(f'{orig_score=}')
         for row in range(pattern.shape[0]):
             if done:
                 break
             for col in range(pattern.shape[1]):
+                if row == 0 and col == 5:
+                    pass
                 pattern[row][col] = '.' if pattern[row][col] == '#' else '#'
-                new_score = score(pattern)
+                new_score = score(pattern, orig_score)
                 pattern[row][col] = '.' if pattern[row][col] == '#' else '#'
-                if new_score > 0 and new_score != orig_score:
+                if new_score > 0:
+#                if new_score > 0:
                     part2 += new_score
                     print(f'pattern {p} row {row} col {col} new score {new_score}')
                     done = True
