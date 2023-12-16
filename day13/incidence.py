@@ -64,7 +64,6 @@ def main():
             pass
         done = False
         orig_score = score(pattern)
-        print(f'{orig_score=}')
         for row in range(pattern.shape[0]):
             if done:
                 break
@@ -75,9 +74,7 @@ def main():
                 new_score = score(pattern, orig_score)
                 pattern[row][col] = '.' if pattern[row][col] == '#' else '#'
                 if new_score > 0:
-#                if new_score > 0:
                     part2 += new_score
-                    print(f'pattern {p} row {row} col {col} new score {new_score}')
                     done = True
                     break
     print('Part 2:', part2)
