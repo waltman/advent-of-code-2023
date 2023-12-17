@@ -77,18 +77,21 @@ def main():
     grid = orig_grid.copy()
     seen = dict()
     loads = []
-    for i in range(1000):
+    done = False
+    TESTS = 1000000000
+    for i in range(TESTS):
         cycle(grid)
         load = total_load(grid)
         loads.append(load)
-        print(f'{i=} {load=}')
+#        print(f'{i=} {load=}')
         k = ''.join(grid.flatten())
-        if k in seen:
+        if k in seen and not done:
             cycle_len = i - seen[k]
             print(f'Found a cycle of length {cycle_len}')
-            remaining = 1000000000 - i
+            remaining = TESTS - i - 1
             offset = remaining % cycle_len
-            print(loads[i - cycle_len + offset] - 1)
+            print('Part 2:', loads[i - cycle_len + offset])
+            done = True
             break
         else:
             seen[k] = i
