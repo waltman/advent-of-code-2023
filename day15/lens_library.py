@@ -6,8 +6,6 @@ def HASH(s):
         val = ((val + ord(c)) * 17) % 256
     return val
 
-print(HASH('HASH'))
-
 def main():
     with open(sys.argv[1]) as f:
         steps = f.read().rstrip().split(',')
