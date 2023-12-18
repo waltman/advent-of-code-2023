@@ -1,4 +1,5 @@
 import sys
+from collections import defaultdict
 
 def HASH(s):
     val = 0
@@ -10,6 +11,6 @@ def main():
     with open(sys.argv[1]) as f:
         steps = f.read().rstrip().split(',')
 
-        print('Part 1:', sum([HASH(step) for step in steps]))
+    print('Part 1:', sum([HASH(step) for step in steps]))
 
 main()
