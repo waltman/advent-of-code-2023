@@ -46,17 +46,12 @@ def do_vert(dir): # |
     else:
         yield do_empty(dir)
 
-def main():
-    # read in the grid
-    with open(sys.argv[1]) as f:
-        grid = np.array([[c for c in line.rstrip()] for line in f])
+def trace_beam(grid, row, col, dir):
     nrows, ncols = grid.shape
-
-    # walk the grid
     energized = set()
     seen = set()
     queue = deque()
-    queue.append((0,0,'r'))
+    queue.append((row, col, dir))
     while queue:
         row, col, dir = queue.popleft()
 
@@ -87,7 +82,28 @@ def main():
         elif grid[row][col] == '|':
             for drow, dcol, dir in do_vert(dir):
                 queue.append((row+drow, col+dcol, dir))
+
+    return len(energized)
+
+def gen_coords(grid):
+    nrows, ncols = grid.shape
+
+    # vertical
+    for col in range(ncols):
+        yield(0, col, 'd')
+        yield(nrows-1, col, 'u')
+
+    # horizontal
+    for row in range(nrows):
+        yield(row, 0, 'r')
+        yield(row, ncols-1, 'l')
+
+def main():
+    # read in the grid
+    with open(sys.argv[1]) as f:
+        grid = np.array([[c for c in line.rstrip()] for line in f])
             
-    print('Part 1:', len(energized))
+    print('Part 1:', trace_beam(grid, 0, 0, 'r'))
+    print('Part 2:', max([trace_beam(grid, row, col, dir) for row, col, dir in gen_coords(grid)]))
 
 main()
