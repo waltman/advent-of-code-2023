@@ -2,6 +2,12 @@ import sys
 import numpy as np
 from shapely import Polygon, Point
 
+def area_trapezoid(points):
+    p = len(points)
+    print(points)
+    p2 = points[::-1]
+    return sum([(p2[i%p][0]+p2[(i+1)%p][0]) * (p2[i%p][1]-p2[(i+1)%p][1]) for i in range(p)]) / 2
+
 def main():
     delta = {
         'R': np.array([0, 1]),
@@ -37,12 +43,14 @@ def main():
             pos = new_pos
             points.append((pos[0], pos[1]))
 
-    polygon = Polygon(points)
-    for row in range(min_row, max_row+1):
-        for col in range(min_col, max_col+1):
-            if polygon.contains(Point((row, col))):
-                meters += 1
+    # polygon = Polygon(points)
+    # for row in range(min_row, max_row+1):
+    #     for col in range(min_col, max_col+1):
+    #         if polygon.contains(Point((row, col))):
+    #             meters += 1
 
-    print('Part 1:', meters)
+    print('Part 1:', area_trapezoid(points))
+
+#    print('Part 1:', meters)
 
 main()
