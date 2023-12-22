@@ -37,8 +37,9 @@ def main():
     best_score = max_score
     seen = dict()
     queue = deque()
-    for row, col, score, direct in neighbors(grid, 0, 0, 'r', 0):
-        queue.append((row, col, score, direct))
+    for direct in ['r', 'd']:
+        for row, col, score, direct in neighbors(grid, 0, 0, direct, 0):
+            queue.append((row, col, score, direct))
 
     while queue:
         row, col, score, direct = queue.popleft()
