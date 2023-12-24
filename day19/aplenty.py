@@ -12,13 +12,13 @@ def parse_cond(cond):
     if op == '<':
         anonf = lambda xmas: xmas[cat] < val
     else:
-        anonf = lambda xmas: xmax[cat] > val
+        anonf = lambda xmas: xmas[cat] > val
 
     return anonf, next_rule
 
 def parse_rule(rule):
     if ':' in rule:
-        return rule.split(':')
+        return parse_cond(rule)
     else:
         anonf = lambda x: True
         return anonf, rule       
@@ -26,6 +26,7 @@ def parse_rule(rule):
 def main():
     workflow = defaultdict(list)
     parts = []
+    part1 = 0
 
     with open(sys.argv[1]) as f:
         for line in f:
@@ -41,5 +42,17 @@ def main():
                     xmas[toks2[0]] = int(toks2[1])
                 parts.append(xmas)
 
-    print(parts)
+    for part in parts:
+        rule = 'in'
+        while rule not in {'A', 'R'}:
+            for cond in workflow[rule]:
+                if cond[0](part):
+                    rule = cond[1]
+                    break
+
+        if rule == 'A':
+            part1 += sum(part.values())
+
+    print('Part 1:', part1)
+
 main()
