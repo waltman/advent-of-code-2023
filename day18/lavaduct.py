@@ -3,13 +3,23 @@ import numpy as np
 from shapely import Polygon, Point
 from random import random
 
-def area_trapezoid(points):
-    p = len(points)
-    p2 = points
-    print(points)
-    for i in range(p+1):
-        print(i, p2[i%p][0]+p2[(i+1)%p][0], p2[i%p][1]-p2[(i+1)%p][1])
-    return sum([(p2[i%p][0]+p2[(i+1)%p][0]) * (p2[i%p][1]-p2[(i+1)%p][1]) for i in range(p)]) / 2
+# Many thanks to https://github.com/mmcclimon/advent-2023/blob/main/bin/day18.py
+# for giving me some working code to base this one! He went with the triangle
+# method instead of trapezoids, which looks like it was the way to go here.
+def shoelace_triangle(points, perim):
+    n = len(points)
+    s1, s2 = 0, 0
+
+    for i in range(n+1):
+        j1 = i % n
+        j2 = (i+1) % n
+        s1 += points[j1][0] * points[j2][1]
+        s2 += points[j1][1] * points[j2][0]
+
+    return (perim + abs(s1-s2)) // 2 + 1
+
+def decode_hex(hexcode):
+    return "RDLU"[int(hexcode[-1])], int(hexcode[0:-1], 16)
 
 def main():
     delta = {
@@ -19,46 +29,31 @@ def main():
         'U': np.array([-1, 0]),
         }
 
-    lines = []
     pos = np.array([0,0])
-    meters = 0
-    min_row = max_row = min_col = max_col = 0
-    vedge = set()
-    hedge = set()
+    pos2 = np.array([0,0])
+    perim, perim2 = 0, 0
     points = [(0,0)]
+    points2 = [(0,0)]
     with open(sys.argv[1]) as f:
         for line in f:
             toks = line.rstrip().split(' ')
+            # part 1
             direct = toks[0]
             dist = int(toks[1])
             new_pos = pos + delta[direct] * dist
-            lines.append((tuple(pos), tuple(new_pos)))
-            meters += dist
-            min_row = min(min_row, new_pos[0])
-            max_row = max(max_row, new_pos[0])
-            min_col = min(min_col, new_pos[1])
-            max_col = max(max_col, new_pos[1])
-            for i in range(dist):
-                if direct in {'U','D'}:
-                    vedge.add((pos[0] + delta[direct][0] * i, pos[1] + delta[direct][1] * i))
-                else:
-                    hedge.add((pos[0] + delta[direct][0] * i, pos[1] + delta[direct][1] * i))
+            perim += dist
             pos = new_pos
             points.append((pos[0], pos[1]))
 
-    # polygon = Polygon(points)
-    # for row in range(min_row, max_row+1):
-    #     for col in range(min_col, max_col+1):
-    #         if polygon.contains(Point((row, col))):
-    #             meters += 1
+            # part 2
+            hexcode = toks[2][2:8]
+            direct, dist = decode_hex(hexcode)
+            new_pos = pos2 + delta[direct] * dist
+            perim2 += dist
+            pos2 = new_pos
+            points2.append((pos2[0], pos2[1]))
 
-    points = [(0,0), (0,4), (4,4), (4,0), (0,0)]
-    points = [(0,0), (0,3), (3,3), (3,0), (0,0)]
-    points = [(1,1), (1,4), (4,4), (4,1), (1,1)]
-    points = [(1,1), (1,5), (5,5), (5,1), (1,1)]
-    print(points)
-    print('Part 1:', area_trapezoid(points))
-
-#    print('Part 1:', meters)
+    print('Part 1:', shoelace_triangle(points, perim))
+    print('Part 2:', shoelace_triangle(points2, perim2))
 
 main()
