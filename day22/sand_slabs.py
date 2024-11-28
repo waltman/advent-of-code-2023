@@ -38,7 +38,29 @@ def main():
             bricks.append(Brick(cnt, p0, p1))
             cnt += 1
             
+    # construct the initial grid
+    dimx = max(brick.x1 for brick in bricks) + 1
+    dimy = max(brick.y1 for brick in bricks) + 1
+    dimz = max(brick.z1 for brick in bricks) + 1
+
+    grid = np.zeros([dimx, dimy, dimz], dtype=np.int32)
+
     for brick in bricks:
-        print(brick)
+        for z in range(brick.z0, brick.z1 + 1):
+            grid[brick.x0:brick.x1+1,brick.y0:brick.y1+1,z] = brick.name
+
+    for z in range(dimz):
+        print(z)
+        print(grid[:,:,z])
+
+
+    # let the bricks drop
+    order = sorted(bricks, key=lambda x: x.z0)
+    print([x.name for x in order])
+    # done = False
+    # while not done:
+    #     done = True
+        
+    
 main()
 
