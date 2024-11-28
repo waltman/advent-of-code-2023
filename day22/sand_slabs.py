@@ -11,6 +11,10 @@ class Brick:
         self.y1 = p1[1]
         self.z1 = p1[2]
 
+        assert self.x0 <= self.x1
+        assert self.y0 <= self.y1
+        assert self.z0 <= self.z1
+
         if self.x0 != self.x1:
             self.direction = 'x'
         elif self.y0 != self.y1:
@@ -26,7 +30,7 @@ def main():
 
     # parse the input
     with open(sys.argv[1]) as f:
-        cnt = 0
+        cnt = 1
         for line in f:
             ends = line.rstrip().split('~')
             p0 = [int(x) for x in ends[0].split(',')]
