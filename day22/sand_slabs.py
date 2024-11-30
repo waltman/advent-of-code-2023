@@ -22,6 +22,28 @@ class Brick:
         else:
             self.direction = 'z'
 
+    def can_drop(self, grid):
+        return np.all(grid[self.x0:self.x1+1, self.y0:self.y1+1, self.z0-1] == 0)
+
+    def drop(self, grid):
+        grid[self.x0:self.x1+1,self.y0:self.y1+1,self.z0:self.z1+1] = 0
+        self.z0 -= 1
+        self.z1 -= 1
+        grid[self.x0:self.x1+1,self.y0:self.y1+1,self.z0:self.z1+1] = self.name
+
+    def above(self, grid):
+        vals = set()
+        if self.direction == 'x':
+            for x in range(self.x0, self.x1+1):
+                if (val := grid[x, self.y0, self.z0-1]) > 0:
+                    vals.add(val)
+        else:
+            for y in range(self.y0, self.y1+1):
+                if (val := grid[self.x0, y, self.z0-1]) > 0:
+                    vals.add(val)
+
+        return vals
+
     def __repr__(self):
         return f'{self.name}: ({self.x0}, {self.y0}, {self.z0}), ({self.x1}, {self.y1}, {self.z1}) {self.direction}'
 
@@ -43,11 +65,13 @@ def main():
     dimy = max(brick.y1 for brick in bricks) + 1
     dimz = max(brick.z1 for brick in bricks) + 1
 
-    grid = np.zeros([dimx, dimy, dimz], dtype=np.int32)
+    grid = np.zeros([dimx, dimy, dimz], dtype=int)
 
     for brick in bricks:
         for z in range(brick.z0, brick.z1 + 1):
             grid[brick.x0:brick.x1+1,brick.y0:brick.y1+1,z] = brick.name
+
+    grid[:,:,0] = -1
 
     for z in range(dimz):
         print(z)
@@ -57,10 +81,33 @@ def main():
     # let the bricks drop
     order = sorted(bricks, key=lambda x: x.z0)
     print([x.name for x in order])
-    # done = False
-    # while not done:
-    #     done = True
+    done = False
+    while not done:
+        done = True
+        for brick in order:
+            while brick.can_drop(grid):
+                brick.drop(grid)
+                done = False
         
+    print('after')
+    for z in range(dimz):
+        print(z)
+        print(grid[:,:,z])
     
+    safe = set()
+    unused = {brick.name for brick in bricks}
+    for brick in bricks:
+        above = brick.above(grid)
+        print(brick.name, above)
+        unused -= above
+        if len(above) > 1:
+            print(f'{above=}')
+            safe |= above
+        
+    print(f'{safe=}, {unused=}')
+    print('Part1:', len(safe) + len(unused))
+    print(len(safe), len(unused))
+    print(safe & unused)
+
 main()
 
