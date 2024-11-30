@@ -32,19 +32,6 @@ class Brick:
         self.z1 -= 1
         grid[self.y0:self.y1+1,self.x0:self.x1+1,self.z0:self.z1+1] = self.name
 
-    def above(self, grid):
-        vals = set()
-        if self.direction == 'x':
-            for x in range(self.x0, self.x1+1):
-                if (val := grid[self.y0, x, self.z0-1]) > 0:
-                    vals.add(val)
-        else:
-            for y in range(self.y0, self.y1+1):
-                if (val := grid[y, self.x0, self.z0-1]) > 0:
-                    vals.add(val)
-
-        return vals
-
     def below(self, grid):
         vals = set()
         if self.direction == 'x':
