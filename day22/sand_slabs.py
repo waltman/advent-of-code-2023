@@ -1,6 +1,7 @@
 import sys
 import numpy as np
-from collections import defaultdict
+from collections import defaultdict, deque
+from copy import deepcopy
 
 class Brick:
     def __init__(self, name, p0, p1):
@@ -44,6 +45,19 @@ class Brick:
                     vals.add(val)
 
         return vals
+
+    def chain_count(self, bricks, grid):
+        cnt = 0
+        grid[self.y0:self.y1+1,self.x0:self.x1+1,self.z0:self.z1+1] = 0
+
+        order = sorted(bricks, key=lambda x: x.z0)
+        for brick in order:
+            if brick.can_drop(grid):
+                cnt += 1
+                while brick.can_drop(grid):
+                    brick.drop(grid)
+
+        return cnt
 
     def __repr__(self):
         return f'{self.name}: ({self.x0}, {self.y0}, {self.z0}), ({self.x1}, {self.y1}, {self.z1}) {self.direction}'
@@ -104,6 +118,6 @@ def main():
             safe.append(brick.name)
             
     print('Part 1', len(safe))
+    print('Part 2:', sum([brick.chain_count(deepcopy(bricks), grid.copy()) for brick in bricks]))
 
 main()
-
