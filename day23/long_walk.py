@@ -84,8 +84,6 @@ def main():
             if len(seen) > worst:
                 print('new worst', len(seen))
                 worst = len(seen)
-            # else:
-            #     print('found path of length', len(seen))
         elif position not in seen:
             for new_pos in valid_moves2(position, grid2):
                 if new_pos not in seen:
