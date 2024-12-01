@@ -38,13 +38,13 @@ def valid_moves(position, grid):
 def valid_moves2(position, grid):
     row, col = position
     nrows, ncols = grid.shape
-    if row > 0 and grid[row-1, col] != '#':
+    if row > 0 and col < ncols-1 and grid[row-1, col]:
         yield row-1, col
-    if row < nrows-1 and grid[row+1, col] != '#':
+    if row < nrows-1 and grid[row+1, col]:
         yield row+1, col
-    if col > 0 and grid[row, col-1] != '#':
+    if col > 0 and row < nrows-1 and grid[row, col-1]:
         yield row, col-1
-    if col < ncols-1 and grid[row, col+1] != '#':
+    if col < ncols-1 and grid[row, col+1]:
         yield row, col+1
 
 def main():
@@ -68,6 +68,12 @@ def main():
                 stack.append((new_pos, seen | {position}))
     print('Part 1:', worst)
 
+    grid2 = np.zeros(grid.shape, dtype=bool)
+    for row in range(nrows):
+        for col in range(ncols):
+            if grid[row,col] != '#':
+                grid2[row,col] = True
+
     stack = []
     stack.append((entrance(grid), set()))
     worst = 0
@@ -78,9 +84,12 @@ def main():
             if len(seen) > worst:
                 print('new worst', len(seen))
                 worst = len(seen)
+            # else:
+            #     print('found path of length', len(seen))
         elif position not in seen:
-            for new_pos in valid_moves2(position, grid):
-                stack.append((new_pos, seen | {position}))
+            for new_pos in valid_moves2(position, grid2):
+                if new_pos not in seen:
+                    stack.append((new_pos, seen | {position}))
     print('Part 2:', worst)
     
 main()
