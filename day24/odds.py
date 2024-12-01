@@ -1,5 +1,6 @@
 import sys
 from itertools import combinations
+import numpy as np
 
 class Hailstone:
     def __init__(self, line):
@@ -45,5 +46,31 @@ def main():
         if x and lower <= x <= upper and lower <= y <= upper and reachable:
             cnt += 1
     print('Part 1:', cnt)
+
+    # linear albegra solution from https://www.reddit.com/r/adventofcode/comments/18pnycy/2023_day_24_solutions
+    pos0 = np.array([hailstones[0].px, hailstones[0].py, hailstones[0].pz], dtype=np.float128)
+    pos1 = np.array([hailstones[1].px, hailstones[1].py, hailstones[1].pz], dtype=np.float128)
+    pos2 = np.array([hailstones[2].px, hailstones[2].py, hailstones[2].pz], dtype=np.float128)
+    vel0 = np.array([hailstones[0].vx, hailstones[0].vy, hailstones[0].vz], dtype=np.float128)
+    vel1 = np.array([hailstones[1].vx, hailstones[1].vy, hailstones[1].vz], dtype=np.float128)
+    vel2 = np.array([hailstones[2].vx, hailstones[2].vy, hailstones[2].vz], dtype=np.float128)
+
+    p1 = pos1 - pos0
+    v1 = vel1 - vel0
+    p2 = pos2 - pos0
+    v2 = vel2 - vel0
+    t1 = -np.dot(np.cross(p1, p2), v2) / np.dot(np.cross(v1, p2), v2)
+    t2 = -np.dot(np.cross(p1, p2), v1) / np.dot(np.cross(p1, v2), v1)
+    print(f'{t1=}, {t2=}')
+
+    c1 = pos1 + t1*vel1
+    c2 = pos2 + t2*vel2
+
+    v = (c2 - c1) / (t2 - t1)
+    p = c1 - t1 * v
+
+    print(p, v)
+    print('Part 2:', np.sum(p))
+    print(p[0] + p[1] + p[2])
 
 main()
