@@ -13,20 +13,22 @@ def main():
             for x in toks2:
                 G.add_edge(toks1[0], x)
 
-    for e1, e2, e3 in combinations(G.edges, 3):
-        G.remove_edge(e1[0], e1[1])
-        G.remove_edge(e2[0], e2[1])
-        G.remove_edge(e3[0], e3[1])
-        if nx.number_connected_components(G) == 2:
-            print(e1, e2, e3)
-            prod = 1
-            for cc in nx.connected_components(G):
-                prod *= len(cc)
-            print('Part 1:', prod)
-            break
-        else:
-            G.add_edge(e1[0], e1[1])
-            G.add_edge(e2[0], e2[1])
-            G.add_edge(e3[0], e3[1])
+    # remove the 3 edges I found in the graphviz visualization
+
+    # test.txt
+    # G.remove_edge('hfx', 'pzl')
+    # G.remove_edge('bvb', 'cmg')
+    # G.remove_edge('nvd', 'jqt')
+
+    # input.txt
+    G.remove_edge('zhb', 'vxr')
+    G.remove_edge('jbx', 'sml')
+    G.remove_edge('vqj', 'szh')
+
+    if nx.number_connected_components(G) == 2:
+        prod = 1
+        for cc in nx.connected_components(G):
+            prod *= len(cc)
+        print('Part 1:', prod)
 
 main()
